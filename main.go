@@ -92,54 +92,21 @@ func loop(w *app.Window) error {
 				gtx := app.NewContext(&ops, e)
 				if openBtn.Clicked(gtx) {
 					go func() {
-						file, err := expl.ChooseFile("png", "jpeg", "jpg")
+						img, err := handleOpenButtonClick(expl)
 						if err != nil {
-							err = fmt.Errorf("failed opening image file: %w", err)
 							imgChan <- ImageResult{Error: err}
-							return
+						} else {
+							imgChan <- *img
 						}
-						defer file.Close()
-						imgData, format, err := image.Decode(file)
-						if err != nil {
-							err = fmt.Errorf("failed decoding image data: %w", err)
-							imgChan <- ImageResult{Error: err}
-							return
-						}
-						imgChan <- ImageResult{Image: imgData, Format: format}
 					}()
 				}
 				if saveBtn.Clicked(gtx) {
-					go func(img ImageResult) {
-						if img.Error != nil {
-							saveChan <- fmt.Errorf("no image loaded, cannot save")
-							return
-						}
-						extension := "jpg"
-						switch img.Format {
-						case "png":
-							extension = "png"
-						}
-						file, err := expl.CreateFile("file." + extension)
+					go func() {
+						err := handleSaveButtonClick(img, expl)
 						if err != nil {
-							saveChan <- fmt.Errorf("failed exporting image file: %w", err)
-							return
+							saveChan <- err
 						}
-						defer func() {
-							saveChan <- file.Close()
-						}()
-						switch extension {
-						case "jpg":
-							if err := jpeg.Encode(file, img.Image, nil); err != nil {
-								saveChan <- fmt.Errorf("failed encoding image file: %w", err)
-								return
-							}
-						case "png":
-							if err := png.Encode(file, img.Image); err != nil {
-								saveChan <- fmt.Errorf("failed encoding image file: %w", err)
-								return
-							}
-						}
-					}(img)
+					}()
 				}
 				layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 					layout.Rigid(material.Button(th, &openBtn, "Open Image").Layout),
@@ -173,4 +140,44 @@ func loop(w *app.Window) error {
 			acks <- struct{}{}
 		}
 	}
+}
+
+func handleOpenButtonClick(expl *explorer.Explorer) (*ImageResult, error) {
+	file, err := expl.ChooseFile("png", "jpeg", "jpg")
+	if err != nil {
+		return nil, fmt.Errorf("failed opening image file: %w", err)
+	}
+	defer file.Close()
+	imgData, format, err := image.Decode(file)
+	if err != nil {
+		return nil, fmt.Errorf("failed decoding image data: %w", err)
+	}
+	return &ImageResult{Image: imgData, Format: format}, nil
+}
+
+func handleSaveButtonClick(img ImageResult, expl *explorer.Explorer) error {
+	if img.Error != nil {
+		return fmt.Errorf("no image loaded, cannot save")
+	}
+	extension := "jpg"
+	switch img.Format {
+	case "png":
+		extension = "png"
+	}
+	file, err := expl.CreateFile("file." + extension)
+	if err != nil {
+		return fmt.Errorf("failed exporting image file: %w", err)
+	}
+	defer file.Close()
+	switch extension {
+	case "jpg":
+		if err := jpeg.Encode(file, img.Image, nil); err != nil {
+			return fmt.Errorf("failed encoding image file: %w", err)
+		}
+	case "png":
+		if err := png.Encode(file, img.Image); err != nil {
+			return fmt.Errorf("failed encoding image file: %w", err)
+		}
+	}
+	return nil
 }
