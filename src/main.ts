@@ -1,10 +1,21 @@
 import "./style.css";
 import { parseDrillFile } from "./drill.ts";
 import { WorkArea } from "./workarea.ts";
+import { Inputs } from "./inputs.ts";
 
 const workArea = new WorkArea(
     document.querySelector<HTMLElement>("#workarea")!
 );
+
+const inputs = new Inputs({
+    nozzleFeedBwd: "nozzlefeedbwd",
+    nozzleFeedFwd: "nozzlefeedfwd",
+    nozzleHoldDurationMs: "nozzlehold",
+    nozzleTemp: "nozzletemp",
+    nozzleZValue: "nozzlez",
+    offset: "areapcboffset",
+    workAreaGlobalOffset: "globaloffset",
+});
 
 const fileInput = document.querySelector<HTMLInputElement>("#drillfile");
 fileInput!.addEventListener("change", () => {
@@ -24,9 +35,15 @@ fileInput!.addEventListener("change", () => {
     fr.readAsText(files[0]);
 });
 
+let enable = false;
 const generateButton = document.querySelector<HTMLInputElement>("#generate");
 generateButton?.addEventListener("click", () => {
-    // pull
+    // pull input field values
+
+    // pull selected points from the work area
+    const points = workArea.getSolderPoints();
+
+    // generate the gcode
 });
 
 function saveToFile(filename: string, data: string) {

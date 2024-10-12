@@ -6,13 +6,22 @@ const margin = { top: 10, right: 30, bottom: 30, left: 60 },
     height = 400 - margin.top - margin.bottom;
 
 export class WorkArea {
+    solderPoints: Array<Point> = [];
+
     constructor(readonly container: HTMLElement) {}
 
     clear() {
         this.container.innerHTML = "";
     }
 
+    getSolderPoints(): Array<Point> {
+        return this.solderPoints;
+    }
+
     plot(points: Array<Point>) {
+        // TODO: let the points be selected.
+        this.solderPoints = points;
+
         let maxX = 0;
         let maxY = 0;
         points.forEach((p) => {
