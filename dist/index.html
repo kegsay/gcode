@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gcode</title>
+    <script type="module" crossorigin src="/assets/index-BMCp9PDM.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CJlNaJc0.css">
+  </head>
+  <body>
+    <div id="body">
+      <div id="left">
+        <div class="entry-row">
+          <label for="drillfile">Drill File</label>
+          <input id="drillfile" type="file"/>
+        </div>
+        <div class="entry-row">
+          <input id="generate" type="button" value="Save Gcode"/>
+        </div>
+        <h4>Work Area</h4>
+        <div class="entry-section">
+          <div class="entry-row">
+            <label for="globaloffset">Global Offset (mm)</label>
+            <input id="globaloffset" type="number" />
+          </div>
+          <div class="entry-row">
+            <label for="areapcboffset">Offset Between PCBs (mm)</label>
+            <input id="areapcboffset" type="number" />
+          </div>
+        </div>
+        
+        <h4>Nozzle Settings</h4>
+        <div class="entry-section">
+          <div class="entry-row">
+            <label for="nozzletemp">Temperature (°c)</label>
+            <input id="nozzletemp" type="number" />
+          </div>
+          <div class="entry-row">
+            <label for="nozzlehold">Hold Duration (ms)</label>
+            <input id="nozzlehold" type="number" />
+          </div>
+          <div class="entry-row">
+            <label for="nozzlefeedfwd">Feed forward (units)</label>
+            <input id="nozzlefeedfwd" type="number" />
+          </div>
+          <div class="entry-row">
+            <label for="nozzlefeedbwd">Feed backwards (units)</label>
+            <input id="nozzlefeedbwd" type="number" />
+          </div>
+          <div class="entry-row">
+            <label for="nozzlez">Z-Value</label>
+            <input id="nozzlez" type="number" />
+          </div>
+        </div>
+      </div>
+
+      <div id="app">
+        <div id="workarea"></div>
+      </div>
+    </div>
+  </body>
+</html>

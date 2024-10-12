@@ -2,6 +2,7 @@ import "./style.css";
 import { parseDrillFile } from "./drill.ts";
 import { WorkArea } from "./workarea.ts";
 import { Inputs } from "./inputs.ts";
+import { generateGcode } from "./gcode.ts";
 
 const workArea = new WorkArea(
     document.querySelector<HTMLElement>("#workarea")!
@@ -38,12 +39,12 @@ fileInput!.addEventListener("change", () => {
 let enable = false;
 const generateButton = document.querySelector<HTMLInputElement>("#generate");
 generateButton?.addEventListener("click", () => {
-    // pull input field values
-
     // pull selected points from the work area
     const points = workArea.getSolderPoints();
 
     // generate the gcode
+    const data = generateGcode(inputs, points);
+    saveToFile("solder.gcode", data);
 });
 
 function saveToFile(filename: string, data: string) {
