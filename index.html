@@ -6,7 +6,54 @@
     <title>gcode</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="body">
+      <div id="left">
+        <div class="entry-row">
+          <label for="drillfile">Drill File</label>
+          <input id="drillfile" type="file"/>
+        </div>
+        <h4>Work Area</h4>
+        <div class="entry-section">
+          <div class="entry-row">
+            <label for="areaoffset">Global Offset (mm)</label>
+            <input id="areaoffset" type="number" />
+          </div>
+          <div class="entry-row">
+            <label for="areapcboffset">Offset Between PCBs (mm)</label>
+            <input id="areapcboffset" type="number" />
+          </div>
+        </div>
+        
+        <h4>Nozzle Settings</h4>
+        <div class="entry-section">
+          <div class="entry-row">
+            <label for="nozzletemp">Temperature (°c)</label>
+            <input id="nozzletemp" type="number" />
+          </div>
+          <div class="entry-row">
+            <label for="nozzlehold">Hold Duration (ms)</label>
+            <input id="nozzlehold" type="number" />
+          </div>
+          <div class="entry-row">
+            <label for="nozzlefeed">Feed increment (units)</label>
+            <input id="nozzlefeed" type="number" />
+          </div>
+          <div class="entry-row">
+            <label for="nozzlez">Z-Value</label>
+            <input id="nozzlez" type="number" />
+          </div>
+        </div>
+      </div>
+
+      <div id="app">
+        <div>
+          <h1>Gcodet</h1>
+          <div class="card">
+            <button id="counter" type="button"></button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
