@@ -12,6 +12,9 @@
           <label for="drillfile">Drill File</label>
           <input id="drillfile" type="file"/>
         </div>
+        <div class="entry-row">
+          <input id="generate" type="button" value="Save Gcode"/>
+        </div>
         <h4>Work Area</h4>
         <div class="entry-section">
           <div class="entry-row">
@@ -35,8 +38,12 @@
             <input id="nozzlehold" type="number" />
           </div>
           <div class="entry-row">
-            <label for="nozzlefeed">Feed increment (units)</label>
-            <input id="nozzlefeed" type="number" />
+            <label for="nozzlefeedfwd">Feed forward (units)</label>
+            <input id="nozzlefeedfwd" type="number" />
+          </div>
+          <div class="entry-row">
+            <label for="nozzlefeedbwd">Feed backwards (units)</label>
+            <input id="nozzlefeedbwd" type="number" />
           </div>
           <div class="entry-row">
             <label for="nozzlez">Z-Value</label>

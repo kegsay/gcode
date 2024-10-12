@@ -19,6 +19,19 @@ fileInput!.addEventListener('change', () => {
     workArea.clear();
     workArea.plot(points);
   };
-  fr.readAsText(files[0]);
-})
-// setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+       fr.readAsText(   files[0]);
+});
+
+const generateButton = document.querySelector<HTMLInputElement>('#generate');
+generateButton?.addEventListener('click', () => {
+  // pull 
+});
+
+function saveToFile(filename: string, data: string) {
+  const blob = new Blob([data], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.download = filename;
+  link.href = window.URL.createObjectURL(blob);
+  link.click();
+  window.URL.revokeObjectURL(link.href);
+}

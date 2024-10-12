@@ -36,13 +36,25 @@ export class WorkArea {
 
         // add x-axis y-axis (10% padding on the domain)
         const x = d3.scaleLinear().domain([0, maxX * 1.1]).range([ 0, width ]);
-        let xAxis = d3.axisBottom(x).ticks([1,2,3,4]);
+        let xAxis = d3.axisBottom(x);
         const gXAxis = svg.append("g");
         gXAxis.attr("transform", "translate(0," + height + ")").call(xAxis);
-        const y = d3.scaleLinear().domain([0, maxY * 1.1]).range([ height, 0]);
+        const y = d3.scaleLinear().domain([0, maxX * 1.1]).range([ height, 0]);
         let yAxis = d3.axisLeft(y);
         const gYAxis = svg.append("g");
         gYAxis.call(yAxis);
+        // add axis labels
+        svg.append("text")
+        .attr("text-anchor", "end")
+        .attr("x", width)
+        .attr("y", height + margin.top + 20)
+        .text("(mm)");
+        svg.append("text")
+        .attr("text-anchor", "end")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -margin.left+20)
+        .attr("x", -margin.top)
+        .text("(mm)");
 
         // add grid lines
         yAxis = d3.axisLeft(y).tickSize(-innerWidth);

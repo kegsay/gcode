@@ -38,16 +38,21 @@ M17
 M30 -- END
 */
 
-export class Point {
+export class Point { // units are ALWAYS mm
     constructor(readonly x: number, readonly y: number) {}
 }
 
 export function parseDrillFile(fileContents: string): Array<Point> {
     const points: Array<Point> = [];
+    let unitMultiplier = 1; // 1 for METRIC, 25.4 for INCH
+    // TODO: Check if in inches and then x25.4 values to always work in mm.
     fileContents.split("\n").forEach((line) => {
         if (line.startsWith("G00") || line.startsWith("G01")) {
             // strip movement commands
             line = line.substring("G00".length);
+        }
+        if (line.startsWith("INCH")) {
+            unitMultiplier = 25.4
         }
         if (!line.startsWith("X")) {
             return; // not a co-ord
@@ -58,7 +63,7 @@ export function parseDrillFile(fileContents: string): Array<Point> {
         try {
             const x = Number(xpart);
             const y = Number(ypart);
-            points.push(new Point(x,y));
+            points.push(new Point(x*unitMultiplier,y*unitMultiplier));
         } catch (err) {
             console.error(`line ${line} malformed: ${err}`);
         }
