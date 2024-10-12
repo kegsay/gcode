@@ -16,6 +16,7 @@ const inputs = new Inputs({
     nozzleZValue: "nozzlez",
     offset: "areapcboffset",
     workAreaGlobalOffset: "globaloffset",
+    restZValue: "restzvalue",
 });
 
 const fileInput = document.querySelector<HTMLInputElement>("#drillfile");
@@ -36,7 +37,6 @@ fileInput!.addEventListener("change", () => {
     fr.readAsText(files[0]);
 });
 
-let enable = false;
 const generateButton = document.querySelector<HTMLInputElement>("#generate");
 generateButton?.addEventListener("click", () => {
     // pull selected points from the work area

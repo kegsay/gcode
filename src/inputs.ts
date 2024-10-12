@@ -1,16 +1,18 @@
 export class Inputs {
     workAreaGlobalOffset: number = 0;
     offset: number = 0;
+    restZValue: number = 8;
     nozzleTemp: number = 300;
     nozzleHoldDurationMs: number = 1000;
     nozzleFeedFwd: number = 10;
     nozzleFeedBwd: number = 5;
-    nozzleZValue: number = 0;
+    nozzleZValue: number = 1;
 
     constructor(
         readonly ids: {
             workAreaGlobalOffset: string;
             offset: string;
+            restZValue: string;
             nozzleTemp: string;
             nozzleHoldDurationMs: string;
             nozzleFeedFwd: string;
@@ -54,15 +56,24 @@ export class Inputs {
     }
 
     validate(): boolean {
+        let valid = true;
         if (this.nozzleFeedBwd >= this.nozzleFeedFwd) {
             this.toggleWarning(this.ids.nozzleFeedBwd, "Must be less than feed forward");
             this.toggleWarning(this.ids.nozzleFeedFwd, "Must be greater than feed backward");
-            return false;
+            valid = false;
         } else {
             this.toggleWarning(this.ids.nozzleFeedFwd);
             this.toggleWarning(this.ids.nozzleFeedBwd);
         }
-        return true;
+        if (this.restZValue <= this.nozzleZValue) {
+            this.toggleWarning(this.ids.restZValue, "Must be greater than soldering Z-value");
+            this.toggleWarning(this.ids.nozzleZValue, "Must be less than at-rest Z-value");
+            valid = false;
+        }else {
+            this.toggleWarning(this.ids.restZValue);
+            this.toggleWarning(this.ids.nozzleZValue);
+        }
+        return valid;
     }
 
     toggleWarning(id: string, msg?: string) {
