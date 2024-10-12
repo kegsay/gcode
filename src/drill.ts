@@ -1,5 +1,3 @@
-
-
 // See https://www.artwork.com/gerber/drl2laser/excellon/index.htm for .drl specification
 // Analysis is below:
 /*
@@ -38,8 +36,12 @@ M17
 M30 -- END
 */
 
-export class Point { // units are ALWAYS mm
-    constructor(readonly x: number, readonly y: number) {}
+export class Point {
+    // units are ALWAYS mm
+    constructor(
+        readonly x: number,
+        readonly y: number
+    ) {}
 }
 
 export function parseDrillFile(fileContents: string): Array<Point> {
@@ -52,7 +54,7 @@ export function parseDrillFile(fileContents: string): Array<Point> {
             line = line.substring("G00".length);
         }
         if (line.startsWith("INCH")) {
-            unitMultiplier = 25.4
+            unitMultiplier = 25.4;
         }
         if (!line.startsWith("X")) {
             return; // not a co-ord
@@ -63,22 +65,20 @@ export function parseDrillFile(fileContents: string): Array<Point> {
         try {
             const x = Number(xpart);
             const y = Number(ypart);
-            points.push(new Point(x*unitMultiplier,y*unitMultiplier));
+            points.push(new Point(x * unitMultiplier, y * unitMultiplier));
         } catch (err) {
             console.error(`line ${line} malformed: ${err}`);
         }
-    })
+    });
     return points;
 }
 
-
-
 export function setupCounter(element: HTMLButtonElement) {
-    let counter = 0
+    let counter = 0;
     const setCounter = (count: number) => {
-        counter = count
-        element.innerHTML = `count is ${counter}`
-    }
-    element.addEventListener('click', () => setCounter(counter + 1))
-    setCounter(0)
-}  
+        counter = count;
+        element.innerHTML = `count is ${counter}`;
+    };
+    element.addEventListener("click", () => setCounter(counter + 1));
+    setCounter(0);
+}
