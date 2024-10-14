@@ -5,7 +5,10 @@ import { Inputs } from "./inputs.ts";
 import { generateGcode } from "./gcode.ts";
 
 const workArea = new WorkArea(
-    document.querySelector<HTMLElement>("#workarea")!
+  document.querySelector<HTMLElement>("#workarea")!
+);
+const pcbArea = new WorkArea(
+  document.querySelector<HTMLElement>("#pcbarea")!
 );
 
 const inputs = new Inputs({
@@ -26,14 +29,16 @@ const inputs = new Inputs({
 });
 
 inputs.addEventListener(Inputs.WORK_AREA_UPDATE, () => {
-    workArea.update({
-        w: inputs.workAreaW,
-        h: inputs.workAreaH,
-        pcbOutlineH: inputs.pcbOutlineH,
-        pcbOutlineW: inputs.pcbOutlineW,
-        offsetW: inputs.offsetW,
-        offsetH: inputs.offsetH,
-    });
+  workArea.update({
+      w: inputs.workAreaW,
+      h: inputs.workAreaH,
+      offsetW: inputs.offsetW,
+      offsetH: inputs.offsetH,
+  });
+  pcbArea.update({
+    pcbOutlineH: inputs.pcbOutlineH,
+    pcbOutlineW: inputs.pcbOutlineW,
+  });
 });
 inputs.dispatchEvent(new Event(Inputs.WORK_AREA_UPDATE));
 
@@ -49,6 +54,10 @@ fileInput!.addEventListener("change", () => {
         // parse file and dump it onto the UI
         const points = parseDrillFile(contents);
         console.log(points);
+        pcbArea.clear();
+        pcbArea.setDrillPoints(points);
+        pcbArea.render();
+        // TODO: only selected points
         workArea.clear();
         workArea.setDrillPoints(points);
         workArea.render();
