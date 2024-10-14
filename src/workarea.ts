@@ -1,9 +1,7 @@
 import { Point } from "./drill";
 import * as d3 from "d3";
 
-const margin = { top: 10, right: 30, bottom: 30, left: 60 },
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+const margin = { top: 10, right: 30, bottom: 30, left: 60 };
 
 export class WorkArea {
     solderPoints: Array<Point> = [];
@@ -46,6 +44,11 @@ export class WorkArea {
     }
 
     render() {
+        const rect = this.container.getBoundingClientRect();
+        const width = Math.floor(rect.width - margin.left - margin.right);
+        const height = Math.floor(rect.height - margin.top - margin.bottom);
+        console.log(`rendering w=${width} h=${height}`);
+
         // TODO: let the points be selected.
         let maxX = 0;
         let maxY = 0;
@@ -114,7 +117,7 @@ export class WorkArea {
         gXAxis.selectAll(".tick line").attr("opacity", 0.1);
 
         // add dots
-        svg.append("g")
+        let dots = svg.append("g")
             .selectAll("dot")
             .data(this.solderPoints)
             .enter()
@@ -125,8 +128,18 @@ export class WorkArea {
             .attr("cy", function (d) {
                 return y(d.y);
             })
-            .attr("r", 1.5)
+            .attr("r", 3.5)
+            .style("cursor", "pointer")
             .style("fill", "#69b3a2");
+
+            /*
+        function zoomed({ transform }) {
+            console.log("zoomed!");
+            svg.select("g").attr("transform", transform);
+        }
+        console.log("attaching zoom 2");
+        const zoom = d3.zoom().on("zoom", zoomed);
+        svg.call(zoom); */
 
         /*
         const yScale = d3.scaleLinear()
