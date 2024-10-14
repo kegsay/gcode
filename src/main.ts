@@ -1,5 +1,5 @@
 import "./style.css";
-import { parseDrillFile } from "./drill.ts";
+import { parseDrillFile, Point } from "./drill.ts";
 import { WorkArea } from "./workarea.ts";
 import { Inputs } from "./inputs.ts";
 import { generateGcode } from "./gcode.ts";
@@ -10,6 +10,12 @@ const workArea = new WorkArea(
 const pcbArea = new WorkArea(
   document.querySelector<HTMLElement>("#pcbarea")!
 );
+pcbArea.addEventListener(WorkArea.POINT_CLICK, (ev) => {
+  const cev = ev as CustomEvent;
+  workArea.addPoints([cev.detail as Point]);
+  // TODO: allow toggle
+  workArea.render();
+});
 
 const inputs = new Inputs({
     // Work area settings
@@ -55,12 +61,8 @@ fileInput!.addEventListener("change", () => {
         const points = parseDrillFile(contents);
         console.log(points);
         pcbArea.clear();
-        pcbArea.setDrillPoints(points);
+        pcbArea.addPoints(points);
         pcbArea.render();
-        // TODO: only selected points
-        workArea.clear();
-        workArea.setDrillPoints(points);
-        workArea.render();
     };
     fr.readAsText(files[0]);
 });

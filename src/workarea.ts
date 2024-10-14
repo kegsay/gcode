@@ -3,7 +3,8 @@ import * as d3 from "d3";
 
 const margin = { top: 10, right: 30, bottom: 30, left: 60 };
 
-export class WorkArea {
+export class WorkArea extends EventTarget {
+    static POINT_CLICK = "POINT_CLICK";
     solderPoints: Array<Point> = [];
     private w: number = 0;
     private h: number = 0;
@@ -12,7 +13,9 @@ export class WorkArea {
     private offsetW: number = 0;
     private offsetH: number = 0;
 
-    constructor(readonly container: HTMLElement) {}
+    constructor(readonly container: HTMLElement) {
+        super();
+    }
 
     clear() {
         this.container.innerHTML = "";
@@ -39,8 +42,8 @@ export class WorkArea {
         this.render();
     }
 
-    setDrillPoints(points: Array<Point>) {
-        this.solderPoints = points;
+    addPoints(points: Array<Point>) {
+        this.solderPoints = this.solderPoints.concat(points);
     }
 
     render() {
@@ -129,6 +132,11 @@ export class WorkArea {
                 return y(d.y);
             })
             .attr("r", 3.5)
+            .on("click", (data) => {
+                const point = data.target.__data__;
+                const ev = new CustomEvent(WorkArea.POINT_CLICK, {detail: point});
+                this.dispatchEvent(ev);
+            })
             .style("cursor", "pointer")
             .style("fill", "#69b3a2");
 
