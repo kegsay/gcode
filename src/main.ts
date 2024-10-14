@@ -25,6 +25,18 @@ const inputs = new Inputs({
     restZValue: "restzvalue",
 });
 
+inputs.addEventListener(Inputs.WORK_AREA_UPDATE, () => {
+    workArea.update({
+        w: inputs.workAreaW,
+        h: inputs.workAreaH,
+        pcbOutlineH: inputs.pcbOutlineH,
+        pcbOutlineW: inputs.pcbOutlineW,
+        offsetW: inputs.offsetW,
+        offsetH: inputs.offsetH,
+    });
+});
+inputs.dispatchEvent(new Event(Inputs.WORK_AREA_UPDATE));
+
 const fileInput = document.querySelector<HTMLInputElement>("#drillfile");
 fileInput!.addEventListener("change", () => {
     const files = fileInput!.files;
@@ -38,7 +50,8 @@ fileInput!.addEventListener("change", () => {
         const points = parseDrillFile(contents);
         console.log(points);
         workArea.clear();
-        workArea.plot(points);
+        workArea.setDrillPoints(points);
+        workArea.render();
     };
     fr.readAsText(files[0]);
 });

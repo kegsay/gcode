@@ -1,4 +1,4 @@
-export class Inputs {
+export class Inputs extends EventTarget {
     // Work Area Settings
     workAreaW: number = 500;
     workAreaH: number = 500;
@@ -6,6 +6,15 @@ export class Inputs {
     offsetH: number = 5;
     pcbOutlineW: number = 100;
     pcbOutlineH: number = 50;
+    static WORK_AREA_UPDATE: "WORK_AREA_UPDATE";
+    private workAreaFieldsForUpdate = [
+        "workAreaH",
+        "workAreaW",
+        "offsetH",
+        "offsetW",
+        "pcbOutlineW",
+        "pcbOutlineH",
+    ];
     // Nozzle settings
     restZValue: number = 8;
     nozzleTemp: number = 300;
@@ -32,27 +41,34 @@ export class Inputs {
             nozzleZValue: string;
         }
     ) {
+        super();
         this.load();
         const setOnChange = (id: string, targetField: string) => {
-            document.querySelector<HTMLInputElement>("#" + id)!.onchange = (ev) => {
+            document.querySelector<HTMLInputElement>("#" + id)!.onchange = (
+                ev
+            ) => {
                 const e = ev.target as HTMLInputElement;
                 this[targetField] = Number(e.value);
                 if (this.validate()) {
                     this.save();
                 }
+                if (this.workAreaFieldsForUpdate.includes(targetField)) {
+                    this.dispatchEvent(new Event(Inputs.WORK_AREA_UPDATE));
+                }
             };
-        }
+        };
         const setDefault = (id: string, val: number) => {
-            document.querySelector<HTMLInputElement>("#" + id)!.value = "" + val;
-        }
+            document.querySelector<HTMLInputElement>("#" + id)!.value =
+                "" + val;
+        };
         Object.keys(ids).forEach((k) => {
             setDefault(this.ids[k], this[k]);
             // This assumes the ids dict maps to the fields of Inputs 1:1 without name changes.
             setOnChange(this.ids[k], k);
-        })
+        });
     }
 
-    save(): void{
+    save(): void {
         Object.keys(this.ids).forEach((k) => {
             localStorage.setItem(k, this[k]);
         });
@@ -70,18 +86,30 @@ export class Inputs {
     validate(): boolean {
         let valid = true;
         if (this.nozzleFeedBwd >= this.nozzleFeedFwd) {
-            this.toggleWarning(this.ids.nozzleFeedBwd, "Must be less than feed forward");
-            this.toggleWarning(this.ids.nozzleFeedFwd, "Must be greater than feed backward");
+            this.toggleWarning(
+                this.ids.nozzleFeedBwd,
+                "Must be less than feed forward"
+            );
+            this.toggleWarning(
+                this.ids.nozzleFeedFwd,
+                "Must be greater than feed backward"
+            );
             valid = false;
         } else {
             this.toggleWarning(this.ids.nozzleFeedFwd);
             this.toggleWarning(this.ids.nozzleFeedBwd);
         }
         if (this.restZValue <= this.nozzleZValue) {
-            this.toggleWarning(this.ids.restZValue, "Must be greater than soldering Z-value");
-            this.toggleWarning(this.ids.nozzleZValue, "Must be less than at-rest Z-value");
+            this.toggleWarning(
+                this.ids.restZValue,
+                "Must be greater than soldering Z-value"
+            );
+            this.toggleWarning(
+                this.ids.nozzleZValue,
+                "Must be less than at-rest Z-value"
+            );
             valid = false;
-        }else {
+        } else {
             this.toggleWarning(this.ids.restZValue);
             this.toggleWarning(this.ids.nozzleZValue);
         }

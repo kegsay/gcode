@@ -7,6 +7,12 @@ const margin = { top: 10, right: 30, bottom: 30, left: 60 },
 
 export class WorkArea {
     solderPoints: Array<Point> = [];
+    private w: number = 0;
+    private h: number = 0;
+    private pcbOutlineW: number = 0;
+    private pcbOutlineH: number = 0;
+    private offsetW: number = 0;
+    private offsetH: number = 0;
 
     constructor(readonly container: HTMLElement) {}
 
@@ -18,13 +24,32 @@ export class WorkArea {
         return this.solderPoints;
     }
 
-    plot(points: Array<Point>) {
-        // TODO: let the points be selected.
-        this.solderPoints = points;
+    update(vals: {
+        w?: number;
+        h?: number;
+        pcbOutlineW?: number;
+        pcbOutlineH?: number;
+        offsetW?: number;
+        offsetH?: number;
+    }) {
+        this.w = vals.w || this.w;
+        this.h = vals.h || this.h;
+        this.pcbOutlineW = vals.pcbOutlineW || this.pcbOutlineW;
+        this.pcbOutlineH = vals.pcbOutlineH || this.pcbOutlineH;
+        this.offsetW = vals.offsetW || this.offsetW;
+        this.offsetH = vals.offsetH || this.offsetH;
+        this.render();
+    }
 
+    setDrillPoints(points: Array<Point>) {
+        this.solderPoints = points;
+    }
+
+    render() {
+        // TODO: let the points be selected.
         let maxX = 0;
         let maxY = 0;
-        points.forEach((p) => {
+        this.solderPoints.forEach((p) => {
             if (p.x > maxX) {
                 maxX = p.x;
             }
@@ -32,7 +57,14 @@ export class WorkArea {
                 maxY = p.y;
             }
         });
-        console.log(maxX, maxY);
+        if (maxX > this.w) {
+            this.w = maxX;
+        }
+        if (maxY > this.h) {
+            this.h = maxY;
+        }
+
+        this.container.innerHTML = ""; // clear previous render
 
         const svg = d3
             .select(this.container)
@@ -48,14 +80,14 @@ export class WorkArea {
         // add x-axis y-axis (10% padding on the domain)
         const x = d3
             .scaleLinear()
-            .domain([0, maxX * 1.1])
+            .domain([0, this.w * 1.1])
             .range([0, width]);
         let xAxis = d3.axisBottom(x);
         const gXAxis = svg.append("g");
         gXAxis.attr("transform", "translate(0," + height + ")").call(xAxis);
         const y = d3
             .scaleLinear()
-            .domain([0, maxX * 1.1])
+            .domain([0, this.h * 1.1])
             .range([height, 0]);
         let yAxis = d3.axisLeft(y);
         const gYAxis = svg.append("g");
@@ -84,7 +116,7 @@ export class WorkArea {
         // add dots
         svg.append("g")
             .selectAll("dot")
-            .data(points)
+            .data(this.solderPoints)
             .enter()
             .append("circle")
             .attr("cx", function (d) {
