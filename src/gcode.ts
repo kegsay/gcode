@@ -4,6 +4,7 @@ import { Inputs } from "./inputs";
 export function generateGcode(inputs: Inputs, points: Array<Point>): string {
     // See https://marlinfw.org/docs/gcode/G028.html etc for more information.
     // The feed rates are hardcoded based on what the 3d printer I'm using is happy with
+    const zFeedRate = "F2100"
     let gcode = [
         "G21", // Set mm
         "G90", // Set absolute positioning
@@ -28,11 +29,11 @@ export function generateGcode(inputs: Inputs, points: Array<Point>): string {
         gcode = gcode.concat([
             `M117 Soldering ${index+1} of ${points.length}`,
             `G0 F3600 X${p.x.toFixed(3)} Y${p.y.toFixed(3)}`, // e.g 4.2 becomes 4.200 and 1.23456 becomes 1.234
-            `G1 F2100 Z${inputs.nozzleZValue.toFixed(3)}`,
+            `G1 ${zFeedRate} Z${inputs.nozzleZValue.toFixed(3)}`,
             `G1 E${inputs.nozzleFeedFwd.toFixed(3)}`,
             `G4 P${Math.floor(inputs.nozzleHoldDurationMs)}`,
             `G1 E-${inputs.nozzleFeedBwd.toFixed(3)}`,
-            `G1 F2100 Z${inputs.restZValue}`,
+            `G1 ${zFeedRate} Z${inputs.restZValue}`,
         ]);
     });
 

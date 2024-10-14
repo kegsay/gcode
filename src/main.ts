@@ -9,13 +9,19 @@ const workArea = new WorkArea(
 );
 
 const inputs = new Inputs({
+    // Work area settings
+    offsetW: "globaloffset-w",
+    offsetH: "globaloffset-h",
+    pcbOutlineW: "pcboutline-w",
+    pcbOutlineH: "pcboutline-h",
+    workAreaW: "dimension-w",
+    workAreaH: "dimension-h",
+    // Nozzle settings
     nozzleFeedBwd: "nozzlefeedbwd",
     nozzleFeedFwd: "nozzlefeedfwd",
     nozzleHoldDurationMs: "nozzlehold",
     nozzleTemp: "nozzletemp",
     nozzleZValue: "nozzlez",
-    offset: "areapcboffset",
-    workAreaGlobalOffset: "globaloffset",
     restZValue: "restzvalue",
 });
 

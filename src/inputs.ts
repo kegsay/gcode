@@ -1,6 +1,12 @@
 export class Inputs {
-    workAreaGlobalOffset: number = 0;
-    offset: number = 0;
+    // Work Area Settings
+    workAreaW: number = 500;
+    workAreaH: number = 500;
+    offsetW: number = 5;
+    offsetH: number = 5;
+    pcbOutlineW: number = 100;
+    pcbOutlineH: number = 50;
+    // Nozzle settings
     restZValue: number = 8;
     nozzleTemp: number = 300;
     nozzleHoldDurationMs: number = 1000;
@@ -10,8 +16,14 @@ export class Inputs {
 
     constructor(
         readonly ids: {
-            workAreaGlobalOffset: string;
-            offset: string;
+            // Work Area Settings
+            workAreaW: string;
+            workAreaH: string;
+            offsetW: string;
+            offsetH: string;
+            pcbOutlineW: string;
+            pcbOutlineH: string;
+            // Nozzle Settings
             restZValue: string;
             nozzleTemp: string;
             nozzleHoldDurationMs: string;
