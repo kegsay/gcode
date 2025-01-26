@@ -8,10 +8,6 @@ export class WorkArea extends EventTarget {
     solderPoints: Set<Point> = new Set();
     private w: number = 0;
     private h: number = 0;
-    private pcbOutlineW: number = 0;
-    private pcbOutlineH: number = 0;
-    private pcbCountW: number = 1;
-    private pcbCountH: number = 1;
     private offsetW: number = 0;
     private offsetH: number = 0;
     private rect: DOMRect;
@@ -31,21 +27,13 @@ export class WorkArea extends EventTarget {
     update(vals: {
         w?: number;
         h?: number;
-        pcbOutlineW?: number;
-        pcbOutlineH?: number;
         offsetW?: number;
         offsetH?: number;
-        pcbCountW?: number;
-        pcbCountH?: number;
     }) {
         this.w = vals.w || this.w;
         this.h = vals.h || this.h;
-        this.pcbOutlineW = vals.pcbOutlineW || this.pcbOutlineW;
-        this.pcbOutlineH = vals.pcbOutlineH || this.pcbOutlineH;
         this.offsetW = vals.offsetW || this.offsetW;
         this.offsetH = vals.offsetH || this.offsetH;
-        this.pcbCountW = vals.pcbCountW || this.pcbCountW;
-        this.pcbCountH = vals.pcbCountH || this.pcbCountH;
         this.rect = this.container.getBoundingClientRect();
         this.render();
     }
@@ -56,18 +44,14 @@ export class WorkArea extends EventTarget {
         });
     }
 
-    contains(p: Point): boolean {
-        return this.solderPoints.has(p);
-    }
-
-    removePoint(p: Point) {
-        this.solderPoints.delete(p);
+    clearPoints() {
+        this.solderPoints.clear();
     }
 
     render() {
         const width = Math.floor(this.rect.width - margin.left - margin.right);
         const height = Math.floor(this.rect.height - margin.top - margin.bottom);
-        console.log(`rendering w=${width} h=${height} len_pcb=${this.solderPoints.size} pcb_grid=${this.pcbCountW}x${this.pcbCountH}`);
+        console.log(`rendering w=${width} h=${height} len_pcb=${this.solderPoints.size}`);
 
         this.container.innerHTML = ""; // clear previous render
 
