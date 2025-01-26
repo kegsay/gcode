@@ -12,8 +12,12 @@ const pcbArea = new WorkArea(
 );
 pcbArea.addEventListener(WorkArea.POINT_CLICK, (ev) => {
   const cev = ev as CustomEvent;
-  workArea.addPoints([cev.detail as Point]);
-  // TODO: allow toggle
+  const p = cev.detail as Point;
+  if (workArea.contains(p)) {
+    workArea.removePoint(p);
+  } else {
+    workArea.addPoints([p]);
+  }
   workArea.render();
 });
 
@@ -25,6 +29,8 @@ const inputs = new Inputs({
     pcbOutlineH: "pcboutline-h",
     workAreaW: "dimension-w",
     workAreaH: "dimension-h",
+    pcbCountW: "pcbcount-w",
+    pcbCountH: "pcbcount-h",
     // Nozzle settings
     nozzleFeedBwd: "nozzlefeedbwd",
     nozzleFeedFwd: "nozzlefeedfwd",

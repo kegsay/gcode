@@ -5,13 +5,14 @@ const margin = { top: 10, right: 30, bottom: 30, left: 60 };
 
 export class WorkArea extends EventTarget {
     static POINT_CLICK = "POINT_CLICK";
-    solderPoints: Array<Point> = [];
+    solderPoints: Set<Point> = new Set();
     private w: number = 0;
     private h: number = 0;
     private pcbOutlineW: number = 0;
     private pcbOutlineH: number = 0;
     private offsetW: number = 0;
     private offsetH: number = 0;
+    private rect: DOMRect;
 
     constructor(readonly container: HTMLElement) {
         super();
@@ -22,7 +23,7 @@ export class WorkArea extends EventTarget {
     }
 
     getSolderPoints(): Array<Point> {
-        return this.solderPoints;
+        return Array.from(this.solderPoints);
     }
 
     update(vals: {
@@ -39,18 +40,28 @@ export class WorkArea extends EventTarget {
         this.pcbOutlineH = vals.pcbOutlineH || this.pcbOutlineH;
         this.offsetW = vals.offsetW || this.offsetW;
         this.offsetH = vals.offsetH || this.offsetH;
+        this.rect = this.container.getBoundingClientRect();
         this.render();
     }
 
     addPoints(points: Array<Point>) {
-        this.solderPoints = this.solderPoints.concat(points);
+        points.forEach((p) => {
+            this.solderPoints.add(p);
+        });
+    }
+
+    contains(p: Point): boolean {
+        return this.solderPoints.has(p);
+    }
+
+    removePoint(p: Point) {
+        this.solderPoints.delete(p);
     }
 
     render() {
-        const rect = this.container.getBoundingClientRect();
-        const width = Math.floor(rect.width - margin.left - margin.right);
-        const height = Math.floor(rect.height - margin.top - margin.bottom);
-        console.log(`rendering w=${width} h=${height}`);
+        const width = Math.floor(this.rect.width - margin.left - margin.right);
+        const height = Math.floor(this.rect.height - margin.top - margin.bottom);
+        console.log(`rendering w=${width} h=${height} len=${this.solderPoints.size}`);
 
         // TODO: let the points be selected.
         let maxX = 0;

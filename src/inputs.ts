@@ -6,6 +6,9 @@ export class Inputs extends EventTarget {
     offsetH: number = 5;
     pcbOutlineW: number = 100;
     pcbOutlineH: number = 50;
+    pcbCountW: number = 1;
+    pcbCountH: number = 1;
+
     static WORK_AREA_UPDATE: "WORK_AREA_UPDATE";
     private workAreaFieldsForUpdate = [
         "workAreaH",
@@ -32,6 +35,8 @@ export class Inputs extends EventTarget {
             offsetH: string;
             pcbOutlineW: string;
             pcbOutlineH: string;
+            pcbCountW: string;
+            pcbCountH: string;
             // Nozzle Settings
             restZValue: string;
             nozzleTemp: string;
@@ -112,6 +117,16 @@ export class Inputs extends EventTarget {
         } else {
             this.toggleWarning(this.ids.restZValue);
             this.toggleWarning(this.ids.nozzleZValue);
+        }
+        if (this.pcbCountW <= 0) {
+            this.toggleWarning(this.ids.pcbCountW, "PCB Count must be > 0");
+        } else {
+            this.toggleWarning(this.ids.pcbCountW);
+        }
+        if (this.pcbCountH <= 0) {
+            this.toggleWarning(this.ids.pcbCountH, "PCB Count must be > 0");
+        } else {
+            this.toggleWarning(this.ids.pcbCountH);
         }
         return valid;
     }
