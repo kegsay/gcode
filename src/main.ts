@@ -46,8 +46,12 @@ inputs.addEventListener(Inputs.WORK_AREA_UPDATE, () => {
       h: inputs.workAreaH,
       offsetW: inputs.offsetW,
       offsetH: inputs.offsetH,
+      pcbCountW: inputs.pcbCountW,
+      pcbCountH: inputs.pcbCountH,
   });
   pcbArea.update({
+    w: inputs.pcbOutlineW,
+    h: inputs.pcbOutlineH,
     pcbOutlineH: inputs.pcbOutlineH,
     pcbOutlineW: inputs.pcbOutlineW,
   });
@@ -69,6 +73,10 @@ fileInput!.addEventListener("change", () => {
         pcbArea.clear();
         pcbArea.addPoints(points);
         pcbArea.render();
+        const maxW = Math.max(...points.map((p) => p.x));
+        const maxH = Math.max(...points.map((p) => p.y));
+        inputs.setDrillMaxPoints(maxW, maxH);
+        inputs.validate();
     };
     fr.readAsText(files[0]);
 });

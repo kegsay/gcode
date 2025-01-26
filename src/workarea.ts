@@ -10,6 +10,8 @@ export class WorkArea extends EventTarget {
     private h: number = 0;
     private pcbOutlineW: number = 0;
     private pcbOutlineH: number = 0;
+    private pcbCountW: number = 1;
+    private pcbCountH: number = 1;
     private offsetW: number = 0;
     private offsetH: number = 0;
     private rect: DOMRect;
@@ -33,6 +35,8 @@ export class WorkArea extends EventTarget {
         pcbOutlineH?: number;
         offsetW?: number;
         offsetH?: number;
+        pcbCountW?: number;
+        pcbCountH?: number;
     }) {
         this.w = vals.w || this.w;
         this.h = vals.h || this.h;
@@ -40,6 +44,8 @@ export class WorkArea extends EventTarget {
         this.pcbOutlineH = vals.pcbOutlineH || this.pcbOutlineH;
         this.offsetW = vals.offsetW || this.offsetW;
         this.offsetH = vals.offsetH || this.offsetH;
+        this.pcbCountW = vals.pcbCountW || this.pcbCountW;
+        this.pcbCountH = vals.pcbCountH || this.pcbCountH;
         this.rect = this.container.getBoundingClientRect();
         this.render();
     }
@@ -61,25 +67,7 @@ export class WorkArea extends EventTarget {
     render() {
         const width = Math.floor(this.rect.width - margin.left - margin.right);
         const height = Math.floor(this.rect.height - margin.top - margin.bottom);
-        console.log(`rendering w=${width} h=${height} len=${this.solderPoints.size}`);
-
-        // TODO: let the points be selected.
-        let maxX = 0;
-        let maxY = 0;
-        this.solderPoints.forEach((p) => {
-            if (p.x > maxX) {
-                maxX = p.x;
-            }
-            if (p.y > maxY) {
-                maxY = p.y;
-            }
-        });
-        if (maxX > this.w) {
-            this.w = maxX;
-        }
-        if (maxY > this.h) {
-            this.h = maxY;
-        }
+        console.log(`rendering w=${width} h=${height} len_pcb=${this.solderPoints.size} pcb_grid=${this.pcbCountW}x${this.pcbCountH}`);
 
         this.container.innerHTML = ""; // clear previous render
 
@@ -97,14 +85,14 @@ export class WorkArea extends EventTarget {
         // add x-axis y-axis (10% padding on the domain)
         const x = d3
             .scaleLinear()
-            .domain([0, this.w * 1.1])
+            .domain([0, this.w ])
             .range([0, width]);
         let xAxis = d3.axisBottom(x);
         const gXAxis = svg.append("g");
         gXAxis.attr("transform", "translate(0," + height + ")").call(xAxis);
         const y = d3
             .scaleLinear()
-            .domain([0, this.h * 1.1])
+            .domain([0, this.h ])
             .range([height, 0]);
         let yAxis = d3.axisLeft(y);
         const gYAxis = svg.append("g");

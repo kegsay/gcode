@@ -17,6 +17,8 @@ export class Inputs extends EventTarget {
         "offsetW",
         "pcbOutlineW",
         "pcbOutlineH",
+        "pcbCountW",
+        "pcbCountH",
     ];
     // Nozzle settings
     restZValue: number = 8;
@@ -25,6 +27,10 @@ export class Inputs extends EventTarget {
     nozzleFeedFwd: number = 10;
     nozzleFeedBwd: number = 5;
     nozzleZValue: number = 1;
+    drillFileMaxPoints: {
+        x: number;
+        y: number
+    } = {x:0,y:0};
 
     constructor(
         readonly ids: {
@@ -88,6 +94,10 @@ export class Inputs extends EventTarget {
         });
     }
 
+    setDrillMaxPoints(x: number, y: number) {
+        this.drillFileMaxPoints = {x:x,y:y};
+    }
+
     validate(): boolean {
         let valid = true;
         if (this.nozzleFeedBwd >= this.nozzleFeedFwd) {
@@ -120,18 +130,46 @@ export class Inputs extends EventTarget {
         }
         if (this.pcbCountW <= 0) {
             this.toggleWarning(this.ids.pcbCountW, "PCB Count must be > 0");
+            valid = false;
         } else {
             this.toggleWarning(this.ids.pcbCountW);
         }
         if (this.pcbCountH <= 0) {
             this.toggleWarning(this.ids.pcbCountH, "PCB Count must be > 0");
+            valid = false;
         } else {
             this.toggleWarning(this.ids.pcbCountH);
+        }
+
+        if (this.workAreaW < this.pcbCountW * this.pcbOutlineW ) {
+            this.toggleWarning(this.ids.workAreaW, `Work area width too small to fit ${this.pcbCountW} PCBs @ ${this.pcbOutlineW}mm`);
+            valid = false;
+        } else {
+            this.toggleWarning(this.ids.workAreaW);
+        }
+        if (this.workAreaH < this.pcbCountH * this.pcbOutlineH ) {
+            this.toggleWarning(this.ids.workAreaH, `Work area height too small to fit ${this.pcbCountH} PCBs @ ${this.pcbOutlineH}mm`);
+            valid = false;
+        } else {
+            this.toggleWarning(this.ids.workAreaH);
+        }
+        if (this.drillFileMaxPoints.x > 0 && this.drillFileMaxPoints.x > this.pcbOutlineW) {
+            this.toggleWarning(this.ids.pcbOutlineW, `PCB outline width must be > the max drill point of ${this.drillFileMaxPoints.x}mm`);
+            valid = false;
+        } else {
+            this.toggleWarning(this.ids.pcbOutlineW);
+        }
+        if (this.drillFileMaxPoints.y > 0 && this.drillFileMaxPoints.y > this.pcbOutlineH) {
+            this.toggleWarning(this.ids.pcbOutlineH, `PCB outline height must be > the max drill point of ${this.drillFileMaxPoints.y}mm`);
+            valid = false;
+        } else {
+            this.toggleWarning(this.ids.pcbOutlineH);
         }
         return valid;
     }
 
     toggleWarning(id: string, msg?: string) {
+        console.log("toggleWarning",id,msg);
         const label = document.querySelector<HTMLLabelElement>(
             'label[for="' + id + '"]'
         );
