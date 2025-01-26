@@ -4,34 +4,39 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>gcode</title>
-    <script type="module" crossorigin src="/assets/index-BJ3c1K9q.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CJlNaJc0.css">
+    <script type="module" crossorigin src="/assets/index-D4yDxrWH.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-B49Hm4P2.css">
   </head>
   <body>
     <div id="body">
       <div id="left">
         <div class="entry-row">
-          <label for="drillfile">Drill File</label>
-          <input id="drillfile" type="file"/>
-        </div>
-        <div class="entry-row">
           <input id="generate" type="button" value="Save Gcode"/>
         </div>
-        <h4>Work Area</h4>
+
+        <div class="section-title">Work Area</div>
         <div class="entry-section">
-          <h5>Dimensions</h5>
+          <div class="subsection">Dimensions</div>
           <div class="entry-row">
             <label for="dimension-w">Width (mm)</label>
             <input id="dimension-w" type="number" />
             <label for="dimension-h">Height (mm)</label>
             <input id="dimension-h" type="number" />
           </div>
-          <h5>Global Offset</h5>
+          <div class="subsection">Global Offset</div>
           <div class="entry-row">
             <label for="globaloffset-w">Width (mm)</label>
             <input id="globaloffset-w" type="number" />
             <label for="globaloffset-h">Height (mm)</label>
             <input id="globaloffset-h" type="number" />
+          </div>
+        </div>
+
+        <div class="section-title">PCB Info</div>
+        <div class="entry-section">
+          <div class="entry-row">
+            <label for="drillfile">Drill File</label>
+            <input id="drillfile" type="file"/>
           </div>
           <h5>PCB Outline</h5>
           <div class="entry-row">
@@ -40,9 +45,17 @@
             <label for="pcboutline-h">Height (mm)</label>
             <input id="pcboutline-h" type="number" />
           </div>
+          <div class="entry-row">
+            <label for="pcbcount-w">PCB Count (w)</label>
+            <input id="pcbcount-w" type="number" />
+            <label for="pcbcount-h">PCB Count (h)</label>
+            <input id="pcbcount-h" type="number" />
+          </div>
+          After opening file, select drill points to solder:
+          <div id="pcbarea"></div>
         </div>
-        
-        <h4>Nozzle Settings</h4>
+
+        <div class="section-title">Nozzle Settings</div>
         <div class="entry-section">
           <div class="entry-row">
             <label for="nozzletemp">Temperature (°c)</label>
