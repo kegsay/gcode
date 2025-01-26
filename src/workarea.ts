@@ -66,7 +66,7 @@ export class WorkArea extends EventTarget {
                 "translate(" + margin.left + "," + margin.top + ")"
             );
 
-        // add x-axis y-axis (10% padding on the domain)
+        // add x-axis y-axis
         const x = d3
             .scaleLinear()
             .domain([0, this.w ])
@@ -86,19 +86,23 @@ export class WorkArea extends EventTarget {
             .attr("text-anchor", "end")
             .attr("x", width)
             .attr("y", height + margin.top + 20)
+            .attr("stroke","white")
+            .attr("fill","none")
             .text("(mm)");
         svg.append("text")
             .attr("text-anchor", "end")
             .attr("transform", "rotate(-90)")
+            .attr("stroke","white")
+            .attr("fill","none")
             .attr("y", -margin.left + 20)
             .attr("x", -margin.top)
             .text("(mm)");
 
         // add grid lines
-        yAxis = d3.axisLeft(y).tickSize(-innerWidth);
+        yAxis = d3.axisLeft(y).tickSize(-this.container.offsetWidth);
         gYAxis.call(yAxis);
         gYAxis.selectAll(".tick line").attr("opacity", 0.1);
-        xAxis = d3.axisBottom(x).tickSize(-innerHeight);
+        xAxis = d3.axisBottom(x).tickSize(-this.container.offsetHeight);
         gXAxis.call(xAxis);
         gXAxis.selectAll(".tick line").attr("opacity", 0.1);
 
